@@ -16,7 +16,11 @@ binImage = de2bi(image);
 bitStream = reshape(binImage',numel(binImage),1);
 
 %%modulate
-modStream1 = qammod(bitStream,M1); %gray code modulated data with M1
+modStream1 = qammod(bitStream,M1); %gray code modulated data with M = 4
 modStream2 = qammod(bitStream,M2);
 modStream3 = qammod(bitStream,M3);
 
+%%received signal
+y1 = awgn(modStream1,snr,'measured');
+y2 = awgn(modStream2,snr,'measured');
+y3 = awgn(modStream3,snr,'measured');
