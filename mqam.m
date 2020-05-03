@@ -1,4 +1,5 @@
 clc
+clear
 close all
 %%initialize vars
 SNR = 20;
@@ -11,7 +12,8 @@ k3 = log2(M3);
 
 %%read image
 image = imread('student.jpg');
-Image_dim = size(image);
+image_dim = size(image);
+elements_image = numel(image);
 imageReshape = reshape(image,numel(image),1);
 binImage = de2bi(imageReshape);
 bitStream = reshape(binImage',numel(binImage),1);
@@ -31,16 +33,35 @@ dataDeMod1 = qamdemod(y1,M1,'gray','OutputType','bit');
 dataDeMod2 = qamdemod(y2,M2,'gray','OutputType','bit');
 dataDeMod3 = qamdemod(y3,M3,'gray','OutputType','bit');
 
-Stream8Bits = reshape (dataDeMod1,numel(image),8); 
-DecImage = uint8(bi2de(Stream8Bits));
-rec_image = reshape(DecImage,Image_dim);
 
+%%reshape image data
+rec_im1 = reshape(dataDeMod1,8,numel(dataDeMod1)/8);
+rec_im1 = uint8(bi2de(rec_im1'));
+rec_im1 = reshape(rec_im1,image_dim);
+
+
+rec_im2 = reshape(dataDeMod2,8,numel(dataDeMod2)/8);
+rec_im2 = uint8(bi2de(rec_im2'));
+rec_im2 = reshape(rec_im2,image_dim);
+
+
+rec_im3 = reshape(dataDeMod3,8,numel(dataDeMod3)/8);
+rec_im3 = uint8(bi2de(rec_im3'));
+rec_im3 = reshape(rec_im3,image_dim);
 
 %%plots
-subplot(1,2,1);
+subplot(2,2,1);
 imshow(image);
 title('Original Image');
 
-subplot(1,2,2);
-imshow(rec_image); 
-title('Received Image')
+subplot(2,2,2);
+imshow(rec_im1); 
+title('Received Image M = 4')
+
+subplot(2,2,3);
+imshow(rec_im2); 
+title('Received Image M = 16')
+
+subplot(2,2,4);
+imshow(rec_im3); 
+title('Received Image M = 64')
