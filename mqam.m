@@ -13,7 +13,7 @@ k3 = log2(M3);
 %%read image
 image = imread('student.jpg');
 image_dim = size(image);
-elements_image = numel(image);
+
 imageReshape = reshape(image,numel(image),1);
 binImage = de2bi(imageReshape);
 bitStream = reshape(binImage',numel(binImage),1);
