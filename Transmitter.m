@@ -6,4 +6,4 @@ imageReshape = reshape(image,numel(image),1);
 binImage = de2bi(imageReshape);
 bitStream = reshape(binImage',numel(binImage),1);
 %modulate
-modstream=qammod(bitStream,M,'InputType','bit');; %gray code modulated data with M
+modstream=qammod(bitStream,M,'InputType','bit'); %gray code modulated data with M
