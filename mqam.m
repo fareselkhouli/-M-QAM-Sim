@@ -19,9 +19,9 @@ binImage = de2bi(imageReshape);
 bitStream = reshape(binImage',numel(binImage),1);
 
 %%modulate
-modStream1 = qammod(bitStream,M1,'InputType','bit'); %gray code modulated data with M = 4
-modStream2 = qammod(bitStream,M2,'InputType','bit');
-modStream3 = qammod(bitStream,M3,'InputType','bit');
+modStream1 = qammod(bitStream,M1,'gray','InputType','bit'); %gray code modulated data with M = 4
+modStream2 = qammod(bitStream,M2,'gray','InputType','bit');
+modStream3 = qammod(bitStream,M3,'gray','InputType','bit');
 
 %%received signal
 y1 = awgn(modStream1,SNR,'measured');
@@ -75,6 +75,7 @@ title('Received Image M = 64')
 [numErrorsG3,berG3] = biterr(bitStream, dataDeMod3);
 graphSNR = 0:0.25:30;
 
+%%BER vs SNR  
 for k = 1:length(graphSNR)
     y = awgn(modStream1,graphSNR(k),'measured');
     y = qamdemod(y,M1,'gray','OutputType','bit');
@@ -95,7 +96,7 @@ thBER = berawgn(graphSNR,'qam',M1);
 thBER2 = berawgn(graphSNR,'qam',M2);
 thBER3 = berawgn(graphSNR,'qam',M3);
 
-figure('Name','BER vs SNR')
+figure;
 semilogy(graphSNR,ber,'color','r')
 hold on
 semilogy(graphSNR,thBER,'color','r','LineStyle','--')
@@ -108,6 +109,46 @@ semilogy(graphSNR,ber3,'color','b')
 hold on
 semilogy(graphSNR,thBER3,'color','b','LineStyle','--')
 hold off
+title('Gray Encoded')
+xlabel("SNR/dB");
+ylabel("BER");
+legend('M = 4','Theoretical M = 4','M = 16','Theoretical M = 16','M = 64','Theoretical M = 64');
+xlim([0 33]);
+ylim([10e-8 1]);
+
+for k = 1:length(graphSNR)
+    modStreamBin1 = qammod(bitStream,M1,'bin','InputType','bit');
+    y1 = awgn(modStreamBin1,graphSNR(k),'measured');
+    dataDeModBin1 = qamdemod(y1,M1,'bin','OutputType','bit');
+    [numErrors,ber(k)] = biterr(bitStream, dataDeModBin1); %error
+end
+for k = 1:length(graphSNR)
+    modStreamBin2 = qammod(bitStream,M2,'bin','InputType','bit');
+    y2 = awgn(modStreamBin2,graphSNR(k),'measured');
+    dataDeModBin2 = qamdemod(y2,M2,'bin','OutputType','bit');
+    [numErrors,ber2(k)] = biterr(bitStream, dataDeModBin2); %error
+end
+for k = 1:length(graphSNR)
+    modStreamBin3 = qammod(bitStream,M3,'bin','InputType','bit');
+    y3 = awgn(modStreamBin3,graphSNR(k),'measured');
+    dataDeModBin3 = qamdemod(y3,M3,'bin','OutputType','bit');
+    [numErrors,ber3(k)] = biterr(bitStream, dataDeModBin3); %error
+end
+
+figure;
+semilogy(graphSNR,ber,'color','r')
+hold on
+semilogy(graphSNR,thBER,'color','r','LineStyle','--')
+hold on
+semilogy(graphSNR,ber2,'color','g')
+hold on
+semilogy(graphSNR,thBER2,'color','g','LineStyle','--')
+hold on
+semilogy(graphSNR,ber3,'color','b')
+hold on
+semilogy(graphSNR,thBER3,'color','b','LineStyle','--')
+hold off
+title('Binary Encoded');
 xlabel("SNR/dB");
 ylabel("BER");
 legend('M = 4','Theoretical M = 4','M = 16','Theoretical M = 16','M = 64','Theoretical M = 64');
