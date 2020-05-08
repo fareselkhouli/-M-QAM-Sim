@@ -78,25 +78,11 @@ graphSNR = 0:1:30;
 for k = 1:length(graphSNR)
     y = awgn(modStream1,graphSNR(k),'measured');
     y = qamdemod(y,M1,'gray','OutputType','bit');
-    [numErrors,ber(k)] = biterr(bitStream, y); %error
+    
+    [numErrorsG1,berM1(k)] = biterr(bitStream, y); %error
 end
-for k = 1:length(graphSNR)
-    y = awgn(modStream2,graphSNR(k),'measured');
-    y = qamdemod(y,M2,'gray','OutputType','bit');
-    [numErrors,ber2(k)] = biterr(bitStream, y); %error
-end
-for k = 1:length(graphSNR)
-    y = awgn(modStream3,graphSNR(k),'measured');
-    y = qamdemod(y,M3,'gray','OutputType','bit');
-    [numErrors,ber3(k)] = biterr(bitStream, y); %error
-end
+
 figure('Name','BER vs SNR')
-semilogy(graphSNR,ber,'color','r')
-hold on
-semilogy(graphSNR,ber2,'color','g')
-hold on
-semilogy(graphSNR,ber3,'color','b')
-hold off
+semilogy(graphSNR,berM1)
 xlabel("SNR/dB");
 ylabel("BER");
-legend('M = 4','M = 16','M = 64');

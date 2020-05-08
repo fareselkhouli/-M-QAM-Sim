@@ -34,3 +34,10 @@ subplot(2,2,4);
 imshow(rec_im3); 
 title('Received Image M = 64')
 
+%%SNR vs Pe
+
+[numErrorsG1,berG1] = biterr(bitStream, dataDeMod1); %error
+[numErrorsG2,berG2] = biterr(bitStream, dataDeMod2);
+[numErrorsG3,berG3] = biterr(bitStream, dataDeMod3);
+graphSNR = 0:1:30;
+for(k = 1:length(graphSNR))
