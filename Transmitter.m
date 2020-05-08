@@ -1,4 +1,4 @@
-function [modstream,image_dim,image]=Transmitter(M,imagefilename)
+function [modstream,image_dim,image,bitStream]=Transmitter(M,imagefilename)
 %%read image
 image = imread(imagefilename);
 image_dim = size(image);
