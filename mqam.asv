@@ -73,16 +73,43 @@ title('Received Image M = 64')
 [numErrorsG1,berG1] = biterr(bitStream, dataDeMod1); %error
 [numErrorsG2,berG2] = biterr(bitStream, dataDeMod2);
 [numErrorsG3,berG3] = biterr(bitStream, dataDeMod3);
-graphSNR = 0:1:30;
+graphSNR = 0:0.25:30;
 
 for k = 1:length(graphSNR)
     y = awgn(modStream1,graphSNR(k),'measured');
     y = qamdemod(y,M1,'gray','OutputType','bit');
-    
-    [numErrorsG1,berM1(k)] = biterr(bitStream, y); %error
+    [numErrors,ber(k)] = biterr(bitStream, y); %error
+end
+for k = 1:length(graphSNR)
+    y = awgn(modStream2,graphSNR(k),'measured');
+    y = qamdemod(y,M2,'gray','OutputType','bit');
+    [numErrors,ber2(k)] = biterr(bitStream, y); %error
+end
+for k = 1:length(graphSNR)
+    y = awgn(modStream3,graphSNR(k),'measured');
+    y = qamdemod(y,M3,'gray','OutputType','bit');
+    [numErrors,ber3(k)] = biterr(bitStream, y); %error
 end
 
+thBER = berawgn(graphSNR,'qam',M1);
+thBER2 = berawgn(graphSNR,'qam',M2);
+thBER3 = berawgn(graphSNR,'qam',M3);
+
 figure('Name','BER vs SNR')
-semilogy(graphSNR,berM1)
+semilogy(graphSNR,ber,'color','r')
+hold on
+semilogy(graphSNR,thBER,'color','r','LineStyle','--')
+hold on
+semilogy(graphSNR,ber2,'color','g')
+hold on
+semilogy(graphSNR,thBER2,'color','g','LineStyle','--')
+hold on
+semilogy(graphSNR,ber3,'color','b')
+hold on
+semilogy(graphSNR,thBER3,'color','g','LineStyle','--')
+hold off
 xlabel("SNR/dB");
 ylabel("BER");
+legend('M = 4','Theoretical M = 4','M = 16','Theoretical M = 16','M = 64','Theoretical M );
+xlim([0 33]);
+ylim([10e-8 1]);
