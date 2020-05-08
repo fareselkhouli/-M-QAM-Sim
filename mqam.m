@@ -77,35 +77,36 @@ graphSNR = 0:0.25:30;
 
 %%BER vs SNR  
 for k = 1:length(graphSNR)
-    y = awgn(modStream1,graphSNR(k),'measured');
-    y = qamdemod(y,M1,'gray','OutputType','bit');
-    [numErrors,ber(k)] = biterr(bitStream, y); %error
+    y1 = awgn(modStream1,graphSNR(k),'measured');
+    dataDeMod1 = qamdemod(y1,M1,'gray','OutputType','bit');
+    [numErrors,berG1(k)] = biterr(bitStream, dataDeMod1); %error
 end
 for k = 1:length(graphSNR)
-    y = awgn(modStream2,graphSNR(k),'measured');
-    y = qamdemod(y,M2,'gray','OutputType','bit');
-    [numErrors,ber2(k)] = biterr(bitStream, y); %error
+    y2 = awgn(modStream2,graphSNR(k),'measured');
+    dataDeMod2 = qamdemod(y2,M2,'gray','OutputType','bit');
+    [numErrors,berG2(k)] = biterr(bitStream, dataDeMod2); %error
 end
 for k = 1:length(graphSNR)
-    y = awgn(modStream3,graphSNR(k),'measured');
-    y = qamdemod(y,M3,'gray','OutputType','bit');
-    [numErrors,ber3(k)] = biterr(bitStream, y); %error
+    y3 = awgn(modStream3,graphSNR(k),'measured');
+    dataDeMod3 = qamdemod(y3,M3,'gray','OutputType','bit');
+    [numErrors,berG3(k)] = biterr(bitStream, dataDeMod3); %error
 end
 
 thBER = berawgn(graphSNR,'qam',M1);
 thBER2 = berawgn(graphSNR,'qam',M2);
 thBER3 = berawgn(graphSNR,'qam',M3);
 
+% Gray Encoding Plot
 figure;
-semilogy(graphSNR,ber,'color','r')
+semilogy(graphSNR,berG1,'color','r')
 hold on
 semilogy(graphSNR,thBER,'color','r','LineStyle','--')
 hold on
-semilogy(graphSNR,ber2,'color','g')
+semilogy(graphSNR,berG2,'color','g')
 hold on
 semilogy(graphSNR,thBER2,'color','g','LineStyle','--')
 hold on
-semilogy(graphSNR,ber3,'color','b')
+semilogy(graphSNR,berG3,'color','b')
 hold on
 semilogy(graphSNR,thBER3,'color','b','LineStyle','--')
 hold off
@@ -120,31 +121,31 @@ for k = 1:length(graphSNR)
     modStreamBin1 = qammod(bitStream,M1,'bin','InputType','bit');
     y1 = awgn(modStreamBin1,graphSNR(k),'measured');
     dataDeModBin1 = qamdemod(y1,M1,'bin','OutputType','bit');
-    [numErrors,ber(k)] = biterr(bitStream, dataDeModBin1); %error
+    [numErrors,berB1(k)] = biterr(bitStream, dataDeModBin1); %error
 end
 for k = 1:length(graphSNR)
     modStreamBin2 = qammod(bitStream,M2,'bin','InputType','bit');
     y2 = awgn(modStreamBin2,graphSNR(k),'measured');
     dataDeModBin2 = qamdemod(y2,M2,'bin','OutputType','bit');
-    [numErrors,ber2(k)] = biterr(bitStream, dataDeModBin2); %error
+    [numErrors,berB2(k)] = biterr(bitStream, dataDeModBin2); %error
 end
 for k = 1:length(graphSNR)
     modStreamBin3 = qammod(bitStream,M3,'bin','InputType','bit');
     y3 = awgn(modStreamBin3,graphSNR(k),'measured');
     dataDeModBin3 = qamdemod(y3,M3,'bin','OutputType','bit');
-    [numErrors,ber3(k)] = biterr(bitStream, dataDeModBin3); %error
+    [numErrors,berB3(k)] = biterr(bitStream, dataDeModBin3); %error
 end
-
+% Binary encoding plot
 figure;
-semilogy(graphSNR,ber,'color','r')
+semilogy(graphSNR,berB1,'color','r')
 hold on
 semilogy(graphSNR,thBER,'color','r','LineStyle','--')
 hold on
-semilogy(graphSNR,ber2,'color','g')
+semilogy(graphSNR,berB2,'color','g')
 hold on
 semilogy(graphSNR,thBER2,'color','g','LineStyle','--')
 hold on
-semilogy(graphSNR,ber3,'color','b')
+semilogy(graphSNR,berB3,'color','b')
 hold on
 semilogy(graphSNR,thBER3,'color','b','LineStyle','--')
 hold off
@@ -152,5 +153,26 @@ title('Binary Encoded');
 xlabel("SNR/dB");
 ylabel("BER");
 legend('M = 4','Theoretical M = 4','M = 16','Theoretical M = 16','M = 64','Theoretical M = 64');
+xlim([0 33]);
+ylim([10e-8 1]);
+
+%%binary vs gray endoding plot
+figure;
+semilogy(graphSNR,berB1,'color','r')
+hold on
+semilogy(graphSNR,berG1,'color','r','LineStyle','--')
+hold on
+semilogy(graphSNR,berB2,'color','g')
+hold on
+semilogy(graphSNR,berG2,'color','g','LineStyle','--')
+hold on
+semilogy(graphSNR,berB3,'color','b')
+hold on
+semilogy(graphSNR,berG3,'color','b','LineStyle','--')
+hold off
+title('Binary vs Gray');
+xlabel("SNR/dB");
+ylabel("BER");
+legend('Binary M = 4','Gray M = 4',' Binary M = 16','Gray M = 16','Binary M = 64','Gray M = 64');
 xlim([0 33]);
 ylim([10e-8 1]);
